@@ -4,16 +4,22 @@ const userSchema = mongoose.Schema(
 	{
         username: {
             type: String,
-            
+            required: true,
             unique: true,
+            index: true
         },
         email: {
             type: String,
-            
+            required: true,
+            unique: true,
+            lowecase: true,
+            trim: true, 
         },
         fullName: {
             type: String,
-            
+            required: true,
+            trim: true, 
+            index: true
         },
        
         password: {
@@ -24,7 +30,6 @@ const userSchema = mongoose.Schema(
             type : Boolean,
             default : false
         },
-
         refreshToken: {
             type: String,
           },
