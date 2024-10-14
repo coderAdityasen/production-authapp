@@ -70,7 +70,7 @@ export const login = async (req, resp) => {
 		  },
 		});
 	} catch (error) {
-		throw error;
+		throw error; // for developement pupose remove in production
 	  resp.status(400).json({message : "user not found"})
 	}
   };
