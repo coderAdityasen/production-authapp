@@ -80,3 +80,12 @@ export const login = async (req, resp) => {
 	}
   };
   
+export const getCurrUser = async (req, resp) => {
+	 const userID = req.user._id;
+	 try {
+		const user = await User.findById(userID).select("-password");
+		return resp.status(200).json({ data: user });
+	 } catch (error) {
+		resp.status(500).json({ success: false, message: "Internal server error" });
+	 }
+}
