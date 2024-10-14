@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs"
 import { User } from "../model/user.models.js";
-import jwt from "jsonwebtoken"
+import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 
 
 export const registerUser = async (req, resp) => {
@@ -51,11 +51,16 @@ export const login = async (req, resp) => {
 	const { email, password } = req.body;
 	try {
 	  const user = await User.findOne({ email });
+	  const userID = user._id
+	  if(!user) {
+		return resp.status(400).json({ message: "Invalid username or password" });
+	  }
 	  const isMatched = await bcryptjs.compare(password, user.password);
 	  if (!user || !isMatched) {
 		return resp.status(400).json({ message: "Invalid username or password" });
 	  }
-	
+
+	  generateTokenAndSetCookie(userID, resp);
 	  return resp
 		.status(200)
 		.json({
@@ -75,3 +80,12 @@ export const login = async (req, resp) => {
 	}
   };
   
+export const getCurrUser = async (req, resp) => {
+	 const userID = req.user._id;
+	 try {
+		const user = await User.findById(userID).select("-password");
+		return resp.status(200).json({ data: user });
+	 } catch (error) {
+		resp.status(500).json({ success: false, message: "Internal server error" });
+	 }
+}
